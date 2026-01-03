@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link rel="stylesheet" href="styling.css">
+    </head>
+    <body>
+        <div id="glossary-input" style="display:none">
+            <!-- Insert "yomitan-glossary" source here -->
+         </div>
+
+        <div class="card">
+            <div id="box-definition">
+                <div class="box-upper-half" onclick="cycleDefinition(1)">
+                    <div id="tags"></div>
+                    <p id="definition"></p>
+                </div>
+                <div class="box-bottom-half">
+                    <button id="extra-info-button" disabled onclick="toggleExtraInfo()">Show extra info</button>
+                    <div id="extra-info" class="extra-info" style="display: none"></div>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            // TODO:
+            // - Rework selectors to find all bottom-level 'glossary' elements and retrace elements upwards
+            // - Support per-definition-group tags
+
+            // Need to be 'var' in global scope (or use IIFE?)
+            var GLOSSARY_INPUT_ID = 'glossary-input';
+            var TAGS_ID = 'tags';
+            var DEFINITION_ID = 'definition';
+            var EXTRA_INFO_BUTTON_ID = 'extra-info-button';
+            var EXTRA_INFO_ID = 'extra-info';
+            var definitionIndex = 0;
+            var definitions = [];
+
+            // Single-entries structure of yomitan-glossary:
+            // <div class="yomitan-glossary">
+            //   <span>
+            //     <div> <!-- Tag group -->
+            //       <span>[...]</span <!-- Tag(s) (one or more)
+            //       <div> <!-- Definition group -->
+            //         <ul data-sc-content="glossary">
+            //           <li>[...]</li> <!-- Definition(s) (one or more) -->
+            //         </ul>
+            //         <div data-sc-content="extra-info"> <!-- Extra info (zero or one) -->
+            //           <div data-sc-content="sense-note">[...]</div>
+            //           <div>
+            //             <div data-sc-content="example-sentence">[...]</div> <!-- Example sentence (zero or one) -->
+            //           </div>
+            //           <div>
+            //             <div data-sc-content="xref">[...]</div> <!-- See also (zero or one) -->
+            //           </div>
+            //         </div>
+            //       </div>
+            //     </div>
+            //   </span>
+            // </div>
+
+            // Typical structure of yomitan-glossary:
+            // <div class="yomitan-glossary">
+            //   <span>
+            //     <ul> <!-- Tag groups -->
+            //       <li> <!-- Tag group -->
+            //         <span>[...]</span <!-- Tag(s) (one or more)
+            //         <ol> <!-- Definition groups -->
+            //           <li> <!-- Definition group -->
+            //             <ul data-sc-content="glossary">
+            //               <li>[...]</li> <!-- Definition(s) (one or more) -->
+            //             </ul>
+            //             <div data-sc-content="extra-info"> <!-- Extra info (zero or one) -->
+            //               <div data-sc-content="sense-note">[...]</div>
+            //               <div>
+            //                 <div data-sc-content="example-sentence">[...]</div> <!-- Example sentence (zero or one) -->
+            //               </div>
+            //               <div>
+            //                 <div data-sc-content="xref">[...]</div> <!-- See also (zero or one) -->
+            //               </div>
+            //             </div>
+            //           </li>
+            //           <li>[...]</li> <!-- Definition group -->
+            //         </ol>
+            //       <li>[...]</li> <!-- Tag group -->
+            //     </ul>
+            //   </span>
+            // </div>
+
+            // Multi-dictionary structure of yomitan-glossary:
+            // <div class="yomitan-glossary">
+            //   <ol>
+            //     <li data-dictionary="Dictionary Name">
+            //       <i>Dictionary Name</i>
+            //       <span>
+            //         <ul>[...]</ul> <!-- Tag groups -->
+            //       </span>
+            //     </li>
+            //     <li data-dictionary="Dictionary Name">
+            //       <i>Dictionary Name</i>
+            //       <span>
+            //         <ul>[...]</ul> <!-- Tag groups -->
+            //       </span>
+            //     </li>
+            //   </ol>
+            // </div>
+
+            function buildDefinitionList(yomitanGlossaryEl) {
+                const outputData = [];
+                const tagGroups = getTagGroups(yomitanGlossaryEl);
+                var definitionGroupCounter = 1;
+                for (const tagGroup of tagGroups) {
+                    const tags = tagGroup.querySelectorAll(':scope > span');
+                    const definitionGroups = getDefinitionGroups(tagGroup);
+                    for (const definitionGroup of definitionGroups) {
+                        const extraInfo = definitionGroup.querySelector('[data-sc-content="extra-info"]');
+                        definitionGroup.querySelectorAll(':scope li').forEach(element => {
+                            outputData.push({
+                                tags,
+                                groupIndex: definitionGroupCounter,
+                                definition: element.textContent,
+                                extraInfo,
+                            });
+                        });
+                        definitionGroupCounter++;
+                    }
+                }
+                return outputData;
+            }
+
+            function getTagGroups(yomitanGlossaryEl) {
+                // Multiple top-level tag groups
+                let tagGroups = Array.from(yomitanGlossaryEl.querySelectorAll(':scope > span > ul > li:not([data-sc-content])'));
+                if (tagGroups.length > 0) {
+                    return tagGroups;
+                }
+
+                // Single top-level tag group
+                tagGroups = [yomitanGlossaryEl.querySelector(':scope > span > div')];
+                if (tagGroups[0]) {
+                    return tagGroups
+                }
+
+                // Multiple top-level dictionaries
+                let dictionaryRootEl = Array.from(yomitanGlossaryEl.querySelectorAll(':scope > ol > li[data-dictionary]'));
+                if (dictionaryRootEl.length > 0) {
+                    tagGroups = []
+                    dictionaryRootEl.map(e => getTagGroups(e)).forEach(partialTagGroups => tagGroups.push(...partialTagGroups));
+                    return tagGroups;
+                }
+
+                throw new Error('Could not find root element(s) for tag group(s)');
+            }
+
+            function getDefinitionGroups(tagGroupEl) {
+                let definitionGroups = Array.from(tagGroupEl.querySelectorAll(':scope > ol > li'));
+                if (definitionGroups.length === 0) {
+                    definitionGroups = [tagGroupEl.querySelector(':scope > div')];
+                    if (!definitionGroups[0]) {
+                        throw new Error('Could not find root element(s) for definition group(s)');
+                    }
+                }
+                return definitionGroups;
+            }
+
+            function toggleExtraInfo() {
+                const extraInfoRootEl = document.getElementById(EXTRA_INFO_ID);
+                const extraInfoButtonEl = document.getElementById(EXTRA_INFO_BUTTON_ID);
+                if (extraInfoRootEl.style.display.toString().includes('none')) {
+                    extraInfoButtonEl.textContent = 'Hide extra info';
+                    extraInfoRootEl.style.display = 'block';
+                } else {
+                    extraInfoButtonEl.textContent = 'Show extra info';
+                    extraInfoRootEl.style.display = 'none';
+                }
+            }
+
+            function handleKeyDown(key) {
+                if (key.keyCode === 37) {
+                    cycleDefinition(-1)
+                } else if (key.keyCode === 39) {
+                    cycleDefinition(1)
+                }
+            }
+
+            function initialize() {
+                const yomitanGlossary = document.getElementById(GLOSSARY_INPUT_ID).firstElementChild;
+                definitions = buildDefinitionList(yomitanGlossary);
+
+                renderDefinition();
+
+                document.addEventListener('keydown', handleKeyDown);
+            }
+
+            function clearChildren(elementId) {
+                const toClear = document.getElementById(elementId);
+                if (toClear) {
+                    while (toClear.firstElementChild) {
+                        toClear.removeChild(toClear.firstElementChild);
+                    }
+                }
+            }
+
+            function cycleDefinition(offset) {
+                let tempIndex = (definitionIndex + offset) % definitions.length;
+                definitionIndex = tempIndex < 0 ? definitions.length + tempIndex : tempIndex;
+
+                clearChildren(TAGS_ID);
+                clearChildren(EXTRA_INFO_ID);
+
+                renderDefinition();
+            }
+
+            function renderDefinition() {
+                const currentDefinition = definitions[definitionIndex];
+
+                document.getElementById(TAGS_ID).append(...(currentDefinition.tags));
+                document.getElementById(DEFINITION_ID).textContent =
+                        '('
+                        + getGroupSymbol(currentDefinition.groupIndex)
+                        + ' '
+                        + (definitionIndex + 1)
+                        + '/'
+                        + definitions.length
+                        + ') '
+                        + currentDefinition.definition;
+
+                const extraInfoButtonEl = document.getElementById(EXTRA_INFO_BUTTON_ID);
+                if (extraInfoButtonEl) { // Won't be present on the front of "reverse" cards
+                    if (currentDefinition.extraInfo) {
+                        document.getElementById(EXTRA_INFO_ID).append(currentDefinition.extraInfo);
+                        extraInfoButtonEl.removeAttribute('disabled');
+                    } else {
+                        extraInfoButtonEl.setAttribute('disabled', true);
+                    }
+                }
+            }
+
+            function getGroupSymbol(groupIndex) {
+                if (groupIndex < 1 || groupIndex > 20) {
+                    return `[${groupIndex}]`;
+                }
+                return String.fromCodePoint(0x245F + groupIndex);
+            }
+
+            initialize();
+
+            // The below line allows Chrome DevTools to expose this inline <script> in the Sources tab
+            //# sourceURL=yomitan-anki-format.js
+        </script>
+    </body>
+</html>

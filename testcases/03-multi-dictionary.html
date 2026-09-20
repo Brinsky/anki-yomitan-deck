@@ -1,0 +1,53 @@
+<!--
+  "Multi-dictionary" shape: an <ol> of <li data-dictionary="..."> at the top
+  level, each wrapping a normal "typical" structure. Exercises the recursive
+  branch of getTagGroups().
+
+  Note the dictionary name appears in an <i> that is NOT inside a tag group, so
+  it must not leak into the tags row or the definition text.
+
+  Expect: 3 definitions, the first two from Jitendex, the third in Japanese from
+  新明解国語辞典.
+-->
+<div class="yomitan-glossary">
+  <ol>
+    <li data-dictionary="Jitendex">
+      <i>Jitendex</i>
+      <span>
+        <ul>
+          <li>
+            <span>noun</span>
+            <ol>
+              <li>
+                <ul data-sc-content="glossary">
+                  <li>dictionary</li>
+                  <li>lexicon</li>
+                </ul>
+                <div data-sc-content="extra-info">
+                  <div data-sc-content="sense-note">Compare 辞書 and 辞典.</div>
+                </div>
+              </li>
+            </ol>
+          </li>
+        </ul>
+      </span>
+    </li>
+    <li data-dictionary="新明解国語辞典">
+      <i>新明解国語辞典</i>
+      <span>
+        <ul>
+          <li>
+            <span>名</span>
+            <ol>
+              <li>
+                <ul data-sc-content="glossary">
+                  <li>ことばを集めて一定の順序に並べ、その読み方・意味・用法などを説明した書物。</li>
+                </ul>
+              </li>
+            </ol>
+          </li>
+        </ul>
+      </span>
+    </li>
+  </ol>
+</div>

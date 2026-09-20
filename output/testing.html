@@ -1,0 +1,1376 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Card template test harness</title>
+    <link rel="stylesheet" href="styling.css">
+    <style>
+        html {
+            background-color: #222222;
+        }
+        body {
+            margin: 0;
+            background-color: #222222;
+        }
+        #test-harness-bar {
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1em;
+            align-items: center;
+            padding: 0.6em 1em;
+            background-color: #111111;
+            border-bottom: 1px solid #444444;
+            color: #dddddd;
+            font-family: system-ui, sans-serif;
+            font-size: 14px;
+            text-align: left;
+        }
+        #test-harness-bar label {
+            display: flex;
+            gap: 0.4em;
+            align-items: center;
+        }
+        #test-harness-bar select,
+        #test-harness-bar button {
+            font: inherit;
+        }
+        #test-harness-flip {
+            cursor: pointer;
+        }
+        #test-harness-hint {
+            margin-left: auto;
+            color: #888888;
+        }
+        #test-harness-status {
+            width: 100%;
+            padding: 0.4em 0.6em;
+            background-color: #5a1111;
+            color: #ffdddd;
+            font-family: ui-monospace, monospace;
+        }
+    </style>
+</head>
+<body>
+    <div id="test-harness-bar">
+        <label>Note type <select id="test-harness-note-type"></select></label>
+        <label>Test case <select id="test-harness-testcase"></select></label>
+        <button id="test-harness-flip" type="button"></button>
+        <span id="test-harness-hint">space to flip &middot; click the definition or press &larr;/&rarr; to cycle</span>
+        <span id="test-harness-status" hidden></span>
+    </div>
+
+    <template data-testcase="01-single-entry">
+        <!--
+          "Single-entry" shape: one tag group directly under the span (no <ul>), and one
+          definition group directly under that (no <ol>). Exercises the getTagGroups()
+          fallback to ':scope > span > div' and the getDefinitionGroups() fallback to
+          ':scope > div'.
+
+          Expect: 2 definitions, both tagged "godan verb"/"transitive", both with extra
+          info available.
+        -->
+        <div class="yomitan-glossary">
+          <span>
+            <div>
+              <span>godan verb</span>
+              <span>transitive</span>
+              <div>
+                <ul data-sc-content="glossary">
+                  <li>to eat</li>
+                  <li>to live on (e.g. a salary); to subsist on</li>
+                </ul>
+                <div data-sc-content="extra-info">
+                  <div data-sc-content="sense-note">Usually written using kana alone.</div>
+                  <div>
+                    <div data-sc-content="example-sentence">毎朝パンを食べる。 — I eat bread every morning.</div>
+                  </div>
+                  <div>
+                    <div data-sc-content="xref">See also: 飲む</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </span>
+        </div>
+    </template>
+
+    <template data-testcase="02-typical">
+        <!--
+          "Typical" shape: <ul> of tag groups under the span, each with an <ol> of
+          definition groups. This is what most Jitendex entries look like.
+
+          Note the second tag group carries two tags, and the second definition group of
+          the first tag group has no extra-info -- so "Show extra info" must enable and
+          disable as you cycle.
+
+          Expect: 4 definitions across 3 definition groups (① ① ② ③).
+        -->
+        <div class="yomitan-glossary">
+          <span>
+            <ul>
+              <li>
+                <span>noun</span>
+                <ol>
+                  <li>
+                    <ul data-sc-content="glossary">
+                      <li>bridge</li>
+                    </ul>
+                    <div data-sc-content="extra-info">
+                      <div data-sc-content="sense-note">Usually written as 橋.</div>
+                      <div>
+                        <div data-sc-content="example-sentence">橋を渡る。 — To cross a bridge.</div>
+                      </div>
+                    </div>
+                  </li>
+                  <li>
+                    <ul data-sc-content="glossary">
+                      <li>chopsticks</li>
+                      <li>pair of chopsticks</li>
+                    </ul>
+                  </li>
+                </ol>
+              </li>
+              <li>
+                <span>noun</span>
+                <span>archaic</span>
+                <ol>
+                  <li>
+                    <ul data-sc-content="glossary">
+                      <li>edge; rim; margin</li>
+                    </ul>
+                    <div data-sc-content="extra-info">
+                      <div data-sc-content="sense-note">Now largely superseded by 端 (はし).</div>
+                      <div>
+                        <div data-sc-content="xref">See also: 端</div>
+                      </div>
+                    </div>
+                  </li>
+                </ol>
+              </li>
+            </ul>
+          </span>
+        </div>
+    </template>
+
+    <template data-testcase="03-multi-dictionary">
+        <!--
+          "Multi-dictionary" shape: an <ol> of <li data-dictionary="..."> at the top
+          level, each wrapping a normal "typical" structure. Exercises the recursive
+          branch of getTagGroups().
+
+          Note the dictionary name appears in an <i> that is NOT inside a tag group, so
+          it must not leak into the tags row or the definition text.
+
+          Expect: 3 definitions, the first two from Jitendex, the third in Japanese from
+          新明解国語辞典.
+        -->
+        <div class="yomitan-glossary">
+          <ol>
+            <li data-dictionary="Jitendex">
+              <i>Jitendex</i>
+              <span>
+                <ul>
+                  <li>
+                    <span>noun</span>
+                    <ol>
+                      <li>
+                        <ul data-sc-content="glossary">
+                          <li>dictionary</li>
+                          <li>lexicon</li>
+                        </ul>
+                        <div data-sc-content="extra-info">
+                          <div data-sc-content="sense-note">Compare 辞書 and 辞典.</div>
+                        </div>
+                      </li>
+                    </ol>
+                  </li>
+                </ul>
+              </span>
+            </li>
+            <li data-dictionary="新明解国語辞典">
+              <i>新明解国語辞典</i>
+              <span>
+                <ul>
+                  <li>
+                    <span>名</span>
+                    <ol>
+                      <li>
+                        <ul data-sc-content="glossary">
+                          <li>ことばを集めて一定の順序に並べ、その読み方・意味・用法などを説明した書物。</li>
+                        </ul>
+                      </li>
+                    </ol>
+                  </li>
+                </ul>
+              </span>
+            </li>
+          </ol>
+        </div>
+    </template>
+
+    <template data-testcase="04-sibling-forms-list">
+        <!--
+          Regression case for the ':not([data-sc-content])' filter in getTagGroups().
+
+          Yomitan emits non-tag-group <li> entries (forms, attribution, ...) as siblings
+          of the real tag groups inside the same <ul>. They are marked with
+          data-sc-content and must be skipped -- if the filter is ever dropped, the
+          "雨 / あめ" forms list below would be parsed as an extra definition group and
+          show up as bogus definitions.
+
+          Expect: exactly 1 definition, "rain", with the extra-info button disabled.
+        -->
+        <div class="yomitan-glossary">
+          <span>
+            <ul>
+              <li>
+                <span>noun</span>
+                <ol>
+                  <li>
+                    <ul data-sc-content="glossary">
+                      <li>rain</li>
+                    </ul>
+                  </li>
+                </ol>
+              </li>
+              <li data-sc-content="forms">
+                <ul>
+                  <li>雨</li>
+                  <li>あめ</li>
+                </ul>
+              </li>
+            </ul>
+          </span>
+        </div>
+    </template>
+
+    <template data-note-type="written" data-side="front">
+        <div id='expression-field'>食べる</div>
+    </template>
+    <template data-note-type="written" data-side="back">
+        <div id='expression-field'>食べる</div>
+
+        <hr>
+
+        <div id="glossary-input" style="display:none"></div>
+
+        <div id="reading-field">
+            <div id="accent-graph"><svg xmlns="http://www.w3.org/2000/svg" width="124" height="30" viewBox="0 0 124 30" style="vertical-align:middle"><path d="M15,20 L45,20 L45,10 L75,10 L75,20 L105,20" stroke="currentColor" stroke-width="2" fill="none"/><circle cx="15" cy="20" r="4" fill="currentColor"/><circle cx="45" cy="20" r="4" fill="currentColor"/><circle cx="75" cy="10" r="4" fill="currentColor"/><circle cx="105" cy="20" r="4" fill="none" stroke="currentColor" stroke-width="2"/></svg></div>
+            <ruby>食<rt>た</rt></ruby>べる
+        </div>
+
+        <div id="box-definition">
+            <div class="box-upper-half" onclick="cycleDefinition(1)">
+                <div id="tags"></div>
+                <p id="definition"></p>
+            </div>
+            <div class="box-bottom-half">
+                <button id="extra-info-button" disabled onclick="toggleExtraInfo()">Show extra info</button>
+                <div id="extra-info" class="extra-info" style="display: none"></div>
+            </div>
+        </div>
+
+        <p><span style="font-size:0.5em;opacity:0.6">[Audio play button]</span></p>
+
+        <script>
+            // TODO:
+            // - Rework selectors to find all bottom-level 'glossary' elements and retrace elements upwards
+            // - Support per-definition-group tags
+
+            // Need to be 'var' in global scope (or use IIFE?)
+            var GLOSSARY_INPUT_ID = 'glossary-input';
+            var TAGS_ID = 'tags';
+            var DEFINITION_ID = 'definition';
+            var EXTRA_INFO_BUTTON_ID = 'extra-info-button';
+            var EXTRA_INFO_ID = 'extra-info';
+            var definitionIndex = 0;
+            var definitions = [];
+
+            // Single-entries structure of yomitan-glossary:
+            // <div class="yomitan-glossary">
+            //   <span>
+            //     <div> <!-- Tag group -->
+            //       <span>[...]</span <!-- Tag(s) (one or more)
+            //       <div> <!-- Definition group -->
+            //         <ul data-sc-content="glossary">
+            //           <li>[...]</li> <!-- Definition(s) (one or more) -->
+            //         </ul>
+            //         <div data-sc-content="extra-info"> <!-- Extra info (zero or one) -->
+            //           <div data-sc-content="sense-note">[...]</div>
+            //           <div>
+            //             <div data-sc-content="example-sentence">[...]</div> <!-- Example sentence (zero or one) -->
+            //           </div>
+            //           <div>
+            //             <div data-sc-content="xref">[...]</div> <!-- See also (zero or one) -->
+            //           </div>
+            //         </div>
+            //       </div>
+            //     </div>
+            //   </span>
+            // </div>
+
+            // Typical structure of yomitan-glossary:
+            // <div class="yomitan-glossary">
+            //   <span>
+            //     <ul> <!-- Tag groups -->
+            //       <li> <!-- Tag group -->
+            //         <span>[...]</span <!-- Tag(s) (one or more)
+            //         <ol> <!-- Definition groups -->
+            //           <li> <!-- Definition group -->
+            //             <ul data-sc-content="glossary">
+            //               <li>[...]</li> <!-- Definition(s) (one or more) -->
+            //             </ul>
+            //             <div data-sc-content="extra-info"> <!-- Extra info (zero or one) -->
+            //               <div data-sc-content="sense-note">[...]</div>
+            //               <div>
+            //                 <div data-sc-content="example-sentence">[...]</div> <!-- Example sentence (zero or one) -->
+            //               </div>
+            //               <div>
+            //                 <div data-sc-content="xref">[...]</div> <!-- See also (zero or one) -->
+            //               </div>
+            //             </div>
+            //           </li>
+            //           <li>[...]</li> <!-- Definition group -->
+            //         </ol>
+            //       <li>[...]</li> <!-- Tag group -->
+            //     </ul>
+            //   </span>
+            // </div>
+
+            // Multi-dictionary structure of yomitan-glossary:
+            // <div class="yomitan-glossary">
+            //   <ol>
+            //     <li data-dictionary="Dictionary Name">
+            //       <i>Dictionary Name</i>
+            //       <span>
+            //         <ul>[...]</ul> <!-- Tag groups -->
+            //       </span>
+            //     </li>
+            //     <li data-dictionary="Dictionary Name">
+            //       <i>Dictionary Name</i>
+            //       <span>
+            //         <ul>[...]</ul> <!-- Tag groups -->
+            //       </span>
+            //     </li>
+            //   </ol>
+            // </div>
+
+            function buildDefinitionList(yomitanGlossaryEl) {
+                const outputData = [];
+                const tagGroups = getTagGroups(yomitanGlossaryEl);
+                var definitionGroupCounter = 1;
+                for (const tagGroup of tagGroups) {
+                    const tags = tagGroup.querySelectorAll(':scope > span');
+                    const definitionGroups = getDefinitionGroups(tagGroup);
+                    for (const definitionGroup of definitionGroups) {
+                        const extraInfo = definitionGroup.querySelector('[data-sc-content="extra-info"]');
+                        definitionGroup.querySelectorAll(':scope li').forEach(element => {
+                            outputData.push({
+                                tags,
+                                groupIndex: definitionGroupCounter,
+                                definition: element.textContent,
+                                extraInfo,
+                            });
+                        });
+                        definitionGroupCounter++;
+                    }
+                }
+                return outputData;
+            }
+
+            function getTagGroups(yomitanGlossaryEl) {
+                // Multiple top-level tag groups
+                let tagGroups = Array.from(yomitanGlossaryEl.querySelectorAll(':scope > span > ul > li:not([data-sc-content])'));
+                if (tagGroups.length > 0) {
+                    return tagGroups;
+                }
+
+                // Single top-level tag group
+                tagGroups = [yomitanGlossaryEl.querySelector(':scope > span > div')];
+                if (tagGroups[0]) {
+                    return tagGroups
+                }
+
+                // Multiple top-level dictionaries
+                let dictionaryRootEl = Array.from(yomitanGlossaryEl.querySelectorAll(':scope > ol > li[data-dictionary]'));
+                if (dictionaryRootEl.length > 0) {
+                    tagGroups = []
+                    dictionaryRootEl.map(e => getTagGroups(e)).forEach(partialTagGroups => tagGroups.push(...partialTagGroups));
+                    return tagGroups;
+                }
+
+                throw new Error('Could not find root element(s) for tag group(s)');
+            }
+
+            function getDefinitionGroups(tagGroupEl) {
+                let definitionGroups = Array.from(tagGroupEl.querySelectorAll(':scope > ol > li'));
+                if (definitionGroups.length === 0) {
+                    definitionGroups = [tagGroupEl.querySelector(':scope > div')];
+                    if (!definitionGroups[0]) {
+                        throw new Error('Could not find root element(s) for definition group(s)');
+                    }
+                }
+                return definitionGroups;
+            }
+
+            function toggleExtraInfo() {
+                const extraInfoRootEl = document.getElementById(EXTRA_INFO_ID);
+                const extraInfoButtonEl = document.getElementById(EXTRA_INFO_BUTTON_ID);
+                if (extraInfoRootEl.style.display.toString().includes('none')) {
+                    extraInfoButtonEl.textContent = 'Hide extra info';
+                    extraInfoRootEl.style.display = 'block';
+                } else {
+                    extraInfoButtonEl.textContent = 'Show extra info';
+                    extraInfoRootEl.style.display = 'none';
+                }
+            }
+
+            function handleKeyDown(key) {
+                if (key.keyCode === 37) {
+                    cycleDefinition(-1)
+                } else if (key.keyCode === 39) {
+                    cycleDefinition(1)
+                }
+            }
+
+            function initialize() {
+                const yomitanGlossary = document.getElementById(GLOSSARY_INPUT_ID).firstElementChild;
+                definitions = buildDefinitionList(yomitanGlossary);
+
+                renderDefinition();
+
+                document.addEventListener('keydown', handleKeyDown);
+            }
+
+            function clearChildren(elementId) {
+                const toClear = document.getElementById(elementId);
+                if (toClear) {
+                    while (toClear.firstElementChild) {
+                        toClear.removeChild(toClear.firstElementChild);
+                    }
+                }
+            }
+
+            function cycleDefinition(offset) {
+                let tempIndex = (definitionIndex + offset) % definitions.length;
+                definitionIndex = tempIndex < 0 ? definitions.length + tempIndex : tempIndex;
+
+                clearChildren(TAGS_ID);
+                clearChildren(EXTRA_INFO_ID);
+
+                renderDefinition();
+            }
+
+            function renderDefinition() {
+                const currentDefinition = definitions[definitionIndex];
+
+                document.getElementById(TAGS_ID).append(...(currentDefinition.tags));
+                document.getElementById(DEFINITION_ID).textContent =
+                        '('
+                        + getGroupSymbol(currentDefinition.groupIndex)
+                        + ' '
+                        + (definitionIndex + 1)
+                        + '/'
+                        + definitions.length
+                        + ') '
+                        + currentDefinition.definition;
+
+                const extraInfoButtonEl = document.getElementById(EXTRA_INFO_BUTTON_ID);
+                if (extraInfoButtonEl) { // Won't be present on the front of "reverse" cards
+                    if (currentDefinition.extraInfo) {
+                        document.getElementById(EXTRA_INFO_ID).append(currentDefinition.extraInfo);
+                        extraInfoButtonEl.removeAttribute('disabled');
+                    } else {
+                        extraInfoButtonEl.setAttribute('disabled', true);
+                    }
+                }
+            }
+
+            function getGroupSymbol(groupIndex) {
+                if (groupIndex < 1 || groupIndex > 20) {
+                    return `[${groupIndex}]`;
+                }
+                return String.fromCodePoint(0x245F + groupIndex);
+            }
+
+            initialize();
+
+            // The below line allows Chrome DevTools to expose this inline <script> in the Sources tab,
+            // under the path shown here -- kept in sync with this file's actual location so breakpoints
+            // set there correspond to real source lines.
+            //# sourceURL=src/inputs/glossary-logic.js
+        </script>
+    </template>
+    <template data-note-type="audio" data-side="front">
+        <p><span style="font-size:0.5em;opacity:0.6">[Audio play button]</span></p>
+    </template>
+    <template data-note-type="audio" data-side="back">
+        <p><span style="font-size:0.5em;opacity:0.6">[Audio play button]</span></p>
+
+        <hr>
+
+        <div id="glossary-input" style="display:none"></div>
+
+        <div id="reading-field">
+            <div id="accent-graph"><svg xmlns="http://www.w3.org/2000/svg" width="124" height="30" viewBox="0 0 124 30" style="vertical-align:middle"><path d="M15,20 L45,20 L45,10 L75,10 L75,20 L105,20" stroke="currentColor" stroke-width="2" fill="none"/><circle cx="15" cy="20" r="4" fill="currentColor"/><circle cx="45" cy="20" r="4" fill="currentColor"/><circle cx="75" cy="10" r="4" fill="currentColor"/><circle cx="105" cy="20" r="4" fill="none" stroke="currentColor" stroke-width="2"/></svg></div>
+            <ruby>食<rt>た</rt></ruby>べる
+        </div>
+
+        <div id="box-definition">
+            <div class="box-upper-half" onclick="cycleDefinition(1)">
+                <div id="tags"></div>
+                <p id="definition"></p>
+            </div>
+            <div class="box-bottom-half">
+                <button id="extra-info-button" disabled onclick="toggleExtraInfo()">Show extra info</button>
+                <div id="extra-info" class="extra-info" style="display: none"></div>
+            </div>
+        </div>
+
+        <p><span style="font-size:0.5em;opacity:0.6">[Audio play button]</span></p>
+
+        <script>
+            // TODO:
+            // - Rework selectors to find all bottom-level 'glossary' elements and retrace elements upwards
+            // - Support per-definition-group tags
+
+            // Need to be 'var' in global scope (or use IIFE?)
+            var GLOSSARY_INPUT_ID = 'glossary-input';
+            var TAGS_ID = 'tags';
+            var DEFINITION_ID = 'definition';
+            var EXTRA_INFO_BUTTON_ID = 'extra-info-button';
+            var EXTRA_INFO_ID = 'extra-info';
+            var definitionIndex = 0;
+            var definitions = [];
+
+            // Single-entries structure of yomitan-glossary:
+            // <div class="yomitan-glossary">
+            //   <span>
+            //     <div> <!-- Tag group -->
+            //       <span>[...]</span <!-- Tag(s) (one or more)
+            //       <div> <!-- Definition group -->
+            //         <ul data-sc-content="glossary">
+            //           <li>[...]</li> <!-- Definition(s) (one or more) -->
+            //         </ul>
+            //         <div data-sc-content="extra-info"> <!-- Extra info (zero or one) -->
+            //           <div data-sc-content="sense-note">[...]</div>
+            //           <div>
+            //             <div data-sc-content="example-sentence">[...]</div> <!-- Example sentence (zero or one) -->
+            //           </div>
+            //           <div>
+            //             <div data-sc-content="xref">[...]</div> <!-- See also (zero or one) -->
+            //           </div>
+            //         </div>
+            //       </div>
+            //     </div>
+            //   </span>
+            // </div>
+
+            // Typical structure of yomitan-glossary:
+            // <div class="yomitan-glossary">
+            //   <span>
+            //     <ul> <!-- Tag groups -->
+            //       <li> <!-- Tag group -->
+            //         <span>[...]</span <!-- Tag(s) (one or more)
+            //         <ol> <!-- Definition groups -->
+            //           <li> <!-- Definition group -->
+            //             <ul data-sc-content="glossary">
+            //               <li>[...]</li> <!-- Definition(s) (one or more) -->
+            //             </ul>
+            //             <div data-sc-content="extra-info"> <!-- Extra info (zero or one) -->
+            //               <div data-sc-content="sense-note">[...]</div>
+            //               <div>
+            //                 <div data-sc-content="example-sentence">[...]</div> <!-- Example sentence (zero or one) -->
+            //               </div>
+            //               <div>
+            //                 <div data-sc-content="xref">[...]</div> <!-- See also (zero or one) -->
+            //               </div>
+            //             </div>
+            //           </li>
+            //           <li>[...]</li> <!-- Definition group -->
+            //         </ol>
+            //       <li>[...]</li> <!-- Tag group -->
+            //     </ul>
+            //   </span>
+            // </div>
+
+            // Multi-dictionary structure of yomitan-glossary:
+            // <div class="yomitan-glossary">
+            //   <ol>
+            //     <li data-dictionary="Dictionary Name">
+            //       <i>Dictionary Name</i>
+            //       <span>
+            //         <ul>[...]</ul> <!-- Tag groups -->
+            //       </span>
+            //     </li>
+            //     <li data-dictionary="Dictionary Name">
+            //       <i>Dictionary Name</i>
+            //       <span>
+            //         <ul>[...]</ul> <!-- Tag groups -->
+            //       </span>
+            //     </li>
+            //   </ol>
+            // </div>
+
+            function buildDefinitionList(yomitanGlossaryEl) {
+                const outputData = [];
+                const tagGroups = getTagGroups(yomitanGlossaryEl);
+                var definitionGroupCounter = 1;
+                for (const tagGroup of tagGroups) {
+                    const tags = tagGroup.querySelectorAll(':scope > span');
+                    const definitionGroups = getDefinitionGroups(tagGroup);
+                    for (const definitionGroup of definitionGroups) {
+                        const extraInfo = definitionGroup.querySelector('[data-sc-content="extra-info"]');
+                        definitionGroup.querySelectorAll(':scope li').forEach(element => {
+                            outputData.push({
+                                tags,
+                                groupIndex: definitionGroupCounter,
+                                definition: element.textContent,
+                                extraInfo,
+                            });
+                        });
+                        definitionGroupCounter++;
+                    }
+                }
+                return outputData;
+            }
+
+            function getTagGroups(yomitanGlossaryEl) {
+                // Multiple top-level tag groups
+                let tagGroups = Array.from(yomitanGlossaryEl.querySelectorAll(':scope > span > ul > li:not([data-sc-content])'));
+                if (tagGroups.length > 0) {
+                    return tagGroups;
+                }
+
+                // Single top-level tag group
+                tagGroups = [yomitanGlossaryEl.querySelector(':scope > span > div')];
+                if (tagGroups[0]) {
+                    return tagGroups
+                }
+
+                // Multiple top-level dictionaries
+                let dictionaryRootEl = Array.from(yomitanGlossaryEl.querySelectorAll(':scope > ol > li[data-dictionary]'));
+                if (dictionaryRootEl.length > 0) {
+                    tagGroups = []
+                    dictionaryRootEl.map(e => getTagGroups(e)).forEach(partialTagGroups => tagGroups.push(...partialTagGroups));
+                    return tagGroups;
+                }
+
+                throw new Error('Could not find root element(s) for tag group(s)');
+            }
+
+            function getDefinitionGroups(tagGroupEl) {
+                let definitionGroups = Array.from(tagGroupEl.querySelectorAll(':scope > ol > li'));
+                if (definitionGroups.length === 0) {
+                    definitionGroups = [tagGroupEl.querySelector(':scope > div')];
+                    if (!definitionGroups[0]) {
+                        throw new Error('Could not find root element(s) for definition group(s)');
+                    }
+                }
+                return definitionGroups;
+            }
+
+            function toggleExtraInfo() {
+                const extraInfoRootEl = document.getElementById(EXTRA_INFO_ID);
+                const extraInfoButtonEl = document.getElementById(EXTRA_INFO_BUTTON_ID);
+                if (extraInfoRootEl.style.display.toString().includes('none')) {
+                    extraInfoButtonEl.textContent = 'Hide extra info';
+                    extraInfoRootEl.style.display = 'block';
+                } else {
+                    extraInfoButtonEl.textContent = 'Show extra info';
+                    extraInfoRootEl.style.display = 'none';
+                }
+            }
+
+            function handleKeyDown(key) {
+                if (key.keyCode === 37) {
+                    cycleDefinition(-1)
+                } else if (key.keyCode === 39) {
+                    cycleDefinition(1)
+                }
+            }
+
+            function initialize() {
+                const yomitanGlossary = document.getElementById(GLOSSARY_INPUT_ID).firstElementChild;
+                definitions = buildDefinitionList(yomitanGlossary);
+
+                renderDefinition();
+
+                document.addEventListener('keydown', handleKeyDown);
+            }
+
+            function clearChildren(elementId) {
+                const toClear = document.getElementById(elementId);
+                if (toClear) {
+                    while (toClear.firstElementChild) {
+                        toClear.removeChild(toClear.firstElementChild);
+                    }
+                }
+            }
+
+            function cycleDefinition(offset) {
+                let tempIndex = (definitionIndex + offset) % definitions.length;
+                definitionIndex = tempIndex < 0 ? definitions.length + tempIndex : tempIndex;
+
+                clearChildren(TAGS_ID);
+                clearChildren(EXTRA_INFO_ID);
+
+                renderDefinition();
+            }
+
+            function renderDefinition() {
+                const currentDefinition = definitions[definitionIndex];
+
+                document.getElementById(TAGS_ID).append(...(currentDefinition.tags));
+                document.getElementById(DEFINITION_ID).textContent =
+                        '('
+                        + getGroupSymbol(currentDefinition.groupIndex)
+                        + ' '
+                        + (definitionIndex + 1)
+                        + '/'
+                        + definitions.length
+                        + ') '
+                        + currentDefinition.definition;
+
+                const extraInfoButtonEl = document.getElementById(EXTRA_INFO_BUTTON_ID);
+                if (extraInfoButtonEl) { // Won't be present on the front of "reverse" cards
+                    if (currentDefinition.extraInfo) {
+                        document.getElementById(EXTRA_INFO_ID).append(currentDefinition.extraInfo);
+                        extraInfoButtonEl.removeAttribute('disabled');
+                    } else {
+                        extraInfoButtonEl.setAttribute('disabled', true);
+                    }
+                }
+            }
+
+            function getGroupSymbol(groupIndex) {
+                if (groupIndex < 1 || groupIndex > 20) {
+                    return `[${groupIndex}]`;
+                }
+                return String.fromCodePoint(0x245F + groupIndex);
+            }
+
+            initialize();
+
+            // The below line allows Chrome DevTools to expose this inline <script> in the Sources tab,
+            // under the path shown here -- kept in sync with this file's actual location so breakpoints
+            // set there correspond to real source lines.
+            //# sourceURL=src/inputs/glossary-logic.js
+        </script>
+    </template>
+    <template data-note-type="reversed" data-side="front">
+        <div id="glossary-input" style="display:none"></div>
+
+        <div id="box-definition">
+            <div class="box-upper-half" onclick="cycleDefinition(1)">
+                <div id="tags"></div>
+                <p id="definition"></p>
+            </div>
+        </div>
+
+        <script>
+            // TODO:
+            // - Rework selectors to find all bottom-level 'glossary' elements and retrace elements upwards
+            // - Support per-definition-group tags
+
+            // Need to be 'var' in global scope (or use IIFE?)
+            var GLOSSARY_INPUT_ID = 'glossary-input';
+            var TAGS_ID = 'tags';
+            var DEFINITION_ID = 'definition';
+            var EXTRA_INFO_BUTTON_ID = 'extra-info-button';
+            var EXTRA_INFO_ID = 'extra-info';
+            var definitionIndex = 0;
+            var definitions = [];
+
+            // Single-entries structure of yomitan-glossary:
+            // <div class="yomitan-glossary">
+            //   <span>
+            //     <div> <!-- Tag group -->
+            //       <span>[...]</span <!-- Tag(s) (one or more)
+            //       <div> <!-- Definition group -->
+            //         <ul data-sc-content="glossary">
+            //           <li>[...]</li> <!-- Definition(s) (one or more) -->
+            //         </ul>
+            //         <div data-sc-content="extra-info"> <!-- Extra info (zero or one) -->
+            //           <div data-sc-content="sense-note">[...]</div>
+            //           <div>
+            //             <div data-sc-content="example-sentence">[...]</div> <!-- Example sentence (zero or one) -->
+            //           </div>
+            //           <div>
+            //             <div data-sc-content="xref">[...]</div> <!-- See also (zero or one) -->
+            //           </div>
+            //         </div>
+            //       </div>
+            //     </div>
+            //   </span>
+            // </div>
+
+            // Typical structure of yomitan-glossary:
+            // <div class="yomitan-glossary">
+            //   <span>
+            //     <ul> <!-- Tag groups -->
+            //       <li> <!-- Tag group -->
+            //         <span>[...]</span <!-- Tag(s) (one or more)
+            //         <ol> <!-- Definition groups -->
+            //           <li> <!-- Definition group -->
+            //             <ul data-sc-content="glossary">
+            //               <li>[...]</li> <!-- Definition(s) (one or more) -->
+            //             </ul>
+            //             <div data-sc-content="extra-info"> <!-- Extra info (zero or one) -->
+            //               <div data-sc-content="sense-note">[...]</div>
+            //               <div>
+            //                 <div data-sc-content="example-sentence">[...]</div> <!-- Example sentence (zero or one) -->
+            //               </div>
+            //               <div>
+            //                 <div data-sc-content="xref">[...]</div> <!-- See also (zero or one) -->
+            //               </div>
+            //             </div>
+            //           </li>
+            //           <li>[...]</li> <!-- Definition group -->
+            //         </ol>
+            //       <li>[...]</li> <!-- Tag group -->
+            //     </ul>
+            //   </span>
+            // </div>
+
+            // Multi-dictionary structure of yomitan-glossary:
+            // <div class="yomitan-glossary">
+            //   <ol>
+            //     <li data-dictionary="Dictionary Name">
+            //       <i>Dictionary Name</i>
+            //       <span>
+            //         <ul>[...]</ul> <!-- Tag groups -->
+            //       </span>
+            //     </li>
+            //     <li data-dictionary="Dictionary Name">
+            //       <i>Dictionary Name</i>
+            //       <span>
+            //         <ul>[...]</ul> <!-- Tag groups -->
+            //       </span>
+            //     </li>
+            //   </ol>
+            // </div>
+
+            function buildDefinitionList(yomitanGlossaryEl) {
+                const outputData = [];
+                const tagGroups = getTagGroups(yomitanGlossaryEl);
+                var definitionGroupCounter = 1;
+                for (const tagGroup of tagGroups) {
+                    const tags = tagGroup.querySelectorAll(':scope > span');
+                    const definitionGroups = getDefinitionGroups(tagGroup);
+                    for (const definitionGroup of definitionGroups) {
+                        const extraInfo = definitionGroup.querySelector('[data-sc-content="extra-info"]');
+                        definitionGroup.querySelectorAll(':scope li').forEach(element => {
+                            outputData.push({
+                                tags,
+                                groupIndex: definitionGroupCounter,
+                                definition: element.textContent,
+                                extraInfo,
+                            });
+                        });
+                        definitionGroupCounter++;
+                    }
+                }
+                return outputData;
+            }
+
+            function getTagGroups(yomitanGlossaryEl) {
+                // Multiple top-level tag groups
+                let tagGroups = Array.from(yomitanGlossaryEl.querySelectorAll(':scope > span > ul > li:not([data-sc-content])'));
+                if (tagGroups.length > 0) {
+                    return tagGroups;
+                }
+
+                // Single top-level tag group
+                tagGroups = [yomitanGlossaryEl.querySelector(':scope > span > div')];
+                if (tagGroups[0]) {
+                    return tagGroups
+                }
+
+                // Multiple top-level dictionaries
+                let dictionaryRootEl = Array.from(yomitanGlossaryEl.querySelectorAll(':scope > ol > li[data-dictionary]'));
+                if (dictionaryRootEl.length > 0) {
+                    tagGroups = []
+                    dictionaryRootEl.map(e => getTagGroups(e)).forEach(partialTagGroups => tagGroups.push(...partialTagGroups));
+                    return tagGroups;
+                }
+
+                throw new Error('Could not find root element(s) for tag group(s)');
+            }
+
+            function getDefinitionGroups(tagGroupEl) {
+                let definitionGroups = Array.from(tagGroupEl.querySelectorAll(':scope > ol > li'));
+                if (definitionGroups.length === 0) {
+                    definitionGroups = [tagGroupEl.querySelector(':scope > div')];
+                    if (!definitionGroups[0]) {
+                        throw new Error('Could not find root element(s) for definition group(s)');
+                    }
+                }
+                return definitionGroups;
+            }
+
+            function toggleExtraInfo() {
+                const extraInfoRootEl = document.getElementById(EXTRA_INFO_ID);
+                const extraInfoButtonEl = document.getElementById(EXTRA_INFO_BUTTON_ID);
+                if (extraInfoRootEl.style.display.toString().includes('none')) {
+                    extraInfoButtonEl.textContent = 'Hide extra info';
+                    extraInfoRootEl.style.display = 'block';
+                } else {
+                    extraInfoButtonEl.textContent = 'Show extra info';
+                    extraInfoRootEl.style.display = 'none';
+                }
+            }
+
+            function handleKeyDown(key) {
+                if (key.keyCode === 37) {
+                    cycleDefinition(-1)
+                } else if (key.keyCode === 39) {
+                    cycleDefinition(1)
+                }
+            }
+
+            function initialize() {
+                const yomitanGlossary = document.getElementById(GLOSSARY_INPUT_ID).firstElementChild;
+                definitions = buildDefinitionList(yomitanGlossary);
+
+                renderDefinition();
+
+                document.addEventListener('keydown', handleKeyDown);
+            }
+
+            function clearChildren(elementId) {
+                const toClear = document.getElementById(elementId);
+                if (toClear) {
+                    while (toClear.firstElementChild) {
+                        toClear.removeChild(toClear.firstElementChild);
+                    }
+                }
+            }
+
+            function cycleDefinition(offset) {
+                let tempIndex = (definitionIndex + offset) % definitions.length;
+                definitionIndex = tempIndex < 0 ? definitions.length + tempIndex : tempIndex;
+
+                clearChildren(TAGS_ID);
+                clearChildren(EXTRA_INFO_ID);
+
+                renderDefinition();
+            }
+
+            function renderDefinition() {
+                const currentDefinition = definitions[definitionIndex];
+
+                document.getElementById(TAGS_ID).append(...(currentDefinition.tags));
+                document.getElementById(DEFINITION_ID).textContent =
+                        '('
+                        + getGroupSymbol(currentDefinition.groupIndex)
+                        + ' '
+                        + (definitionIndex + 1)
+                        + '/'
+                        + definitions.length
+                        + ') '
+                        + currentDefinition.definition;
+
+                const extraInfoButtonEl = document.getElementById(EXTRA_INFO_BUTTON_ID);
+                if (extraInfoButtonEl) { // Won't be present on the front of "reverse" cards
+                    if (currentDefinition.extraInfo) {
+                        document.getElementById(EXTRA_INFO_ID).append(currentDefinition.extraInfo);
+                        extraInfoButtonEl.removeAttribute('disabled');
+                    } else {
+                        extraInfoButtonEl.setAttribute('disabled', true);
+                    }
+                }
+            }
+
+            function getGroupSymbol(groupIndex) {
+                if (groupIndex < 1 || groupIndex > 20) {
+                    return `[${groupIndex}]`;
+                }
+                return String.fromCodePoint(0x245F + groupIndex);
+            }
+
+            initialize();
+
+            // The below line allows Chrome DevTools to expose this inline <script> in the Sources tab,
+            // under the path shown here -- kept in sync with this file's actual location so breakpoints
+            // set there correspond to real source lines.
+            //# sourceURL=src/inputs/glossary-logic.js
+        </script>
+    </template>
+    <template data-note-type="reversed" data-side="back">
+        <div id="glossary-input" style="display:none"></div>
+
+        <div id="box-definition">
+            <div class="box-upper-half" onclick="cycleDefinition(1)">
+                <div id="tags"></div>
+                <p id="definition"></p>
+            </div>
+        </div>
+
+        <script>
+            // TODO:
+            // - Rework selectors to find all bottom-level 'glossary' elements and retrace elements upwards
+            // - Support per-definition-group tags
+
+            // Need to be 'var' in global scope (or use IIFE?)
+            var GLOSSARY_INPUT_ID = 'glossary-input';
+            var TAGS_ID = 'tags';
+            var DEFINITION_ID = 'definition';
+            var EXTRA_INFO_BUTTON_ID = 'extra-info-button';
+            var EXTRA_INFO_ID = 'extra-info';
+            var definitionIndex = 0;
+            var definitions = [];
+
+            // Single-entries structure of yomitan-glossary:
+            // <div class="yomitan-glossary">
+            //   <span>
+            //     <div> <!-- Tag group -->
+            //       <span>[...]</span <!-- Tag(s) (one or more)
+            //       <div> <!-- Definition group -->
+            //         <ul data-sc-content="glossary">
+            //           <li>[...]</li> <!-- Definition(s) (one or more) -->
+            //         </ul>
+            //         <div data-sc-content="extra-info"> <!-- Extra info (zero or one) -->
+            //           <div data-sc-content="sense-note">[...]</div>
+            //           <div>
+            //             <div data-sc-content="example-sentence">[...]</div> <!-- Example sentence (zero or one) -->
+            //           </div>
+            //           <div>
+            //             <div data-sc-content="xref">[...]</div> <!-- See also (zero or one) -->
+            //           </div>
+            //         </div>
+            //       </div>
+            //     </div>
+            //   </span>
+            // </div>
+
+            // Typical structure of yomitan-glossary:
+            // <div class="yomitan-glossary">
+            //   <span>
+            //     <ul> <!-- Tag groups -->
+            //       <li> <!-- Tag group -->
+            //         <span>[...]</span <!-- Tag(s) (one or more)
+            //         <ol> <!-- Definition groups -->
+            //           <li> <!-- Definition group -->
+            //             <ul data-sc-content="glossary">
+            //               <li>[...]</li> <!-- Definition(s) (one or more) -->
+            //             </ul>
+            //             <div data-sc-content="extra-info"> <!-- Extra info (zero or one) -->
+            //               <div data-sc-content="sense-note">[...]</div>
+            //               <div>
+            //                 <div data-sc-content="example-sentence">[...]</div> <!-- Example sentence (zero or one) -->
+            //               </div>
+            //               <div>
+            //                 <div data-sc-content="xref">[...]</div> <!-- See also (zero or one) -->
+            //               </div>
+            //             </div>
+            //           </li>
+            //           <li>[...]</li> <!-- Definition group -->
+            //         </ol>
+            //       <li>[...]</li> <!-- Tag group -->
+            //     </ul>
+            //   </span>
+            // </div>
+
+            // Multi-dictionary structure of yomitan-glossary:
+            // <div class="yomitan-glossary">
+            //   <ol>
+            //     <li data-dictionary="Dictionary Name">
+            //       <i>Dictionary Name</i>
+            //       <span>
+            //         <ul>[...]</ul> <!-- Tag groups -->
+            //       </span>
+            //     </li>
+            //     <li data-dictionary="Dictionary Name">
+            //       <i>Dictionary Name</i>
+            //       <span>
+            //         <ul>[...]</ul> <!-- Tag groups -->
+            //       </span>
+            //     </li>
+            //   </ol>
+            // </div>
+
+            function buildDefinitionList(yomitanGlossaryEl) {
+                const outputData = [];
+                const tagGroups = getTagGroups(yomitanGlossaryEl);
+                var definitionGroupCounter = 1;
+                for (const tagGroup of tagGroups) {
+                    const tags = tagGroup.querySelectorAll(':scope > span');
+                    const definitionGroups = getDefinitionGroups(tagGroup);
+                    for (const definitionGroup of definitionGroups) {
+                        const extraInfo = definitionGroup.querySelector('[data-sc-content="extra-info"]');
+                        definitionGroup.querySelectorAll(':scope li').forEach(element => {
+                            outputData.push({
+                                tags,
+                                groupIndex: definitionGroupCounter,
+                                definition: element.textContent,
+                                extraInfo,
+                            });
+                        });
+                        definitionGroupCounter++;
+                    }
+                }
+                return outputData;
+            }
+
+            function getTagGroups(yomitanGlossaryEl) {
+                // Multiple top-level tag groups
+                let tagGroups = Array.from(yomitanGlossaryEl.querySelectorAll(':scope > span > ul > li:not([data-sc-content])'));
+                if (tagGroups.length > 0) {
+                    return tagGroups;
+                }
+
+                // Single top-level tag group
+                tagGroups = [yomitanGlossaryEl.querySelector(':scope > span > div')];
+                if (tagGroups[0]) {
+                    return tagGroups
+                }
+
+                // Multiple top-level dictionaries
+                let dictionaryRootEl = Array.from(yomitanGlossaryEl.querySelectorAll(':scope > ol > li[data-dictionary]'));
+                if (dictionaryRootEl.length > 0) {
+                    tagGroups = []
+                    dictionaryRootEl.map(e => getTagGroups(e)).forEach(partialTagGroups => tagGroups.push(...partialTagGroups));
+                    return tagGroups;
+                }
+
+                throw new Error('Could not find root element(s) for tag group(s)');
+            }
+
+            function getDefinitionGroups(tagGroupEl) {
+                let definitionGroups = Array.from(tagGroupEl.querySelectorAll(':scope > ol > li'));
+                if (definitionGroups.length === 0) {
+                    definitionGroups = [tagGroupEl.querySelector(':scope > div')];
+                    if (!definitionGroups[0]) {
+                        throw new Error('Could not find root element(s) for definition group(s)');
+                    }
+                }
+                return definitionGroups;
+            }
+
+            function toggleExtraInfo() {
+                const extraInfoRootEl = document.getElementById(EXTRA_INFO_ID);
+                const extraInfoButtonEl = document.getElementById(EXTRA_INFO_BUTTON_ID);
+                if (extraInfoRootEl.style.display.toString().includes('none')) {
+                    extraInfoButtonEl.textContent = 'Hide extra info';
+                    extraInfoRootEl.style.display = 'block';
+                } else {
+                    extraInfoButtonEl.textContent = 'Show extra info';
+                    extraInfoRootEl.style.display = 'none';
+                }
+            }
+
+            function handleKeyDown(key) {
+                if (key.keyCode === 37) {
+                    cycleDefinition(-1)
+                } else if (key.keyCode === 39) {
+                    cycleDefinition(1)
+                }
+            }
+
+            function initialize() {
+                const yomitanGlossary = document.getElementById(GLOSSARY_INPUT_ID).firstElementChild;
+                definitions = buildDefinitionList(yomitanGlossary);
+
+                renderDefinition();
+
+                document.addEventListener('keydown', handleKeyDown);
+            }
+
+            function clearChildren(elementId) {
+                const toClear = document.getElementById(elementId);
+                if (toClear) {
+                    while (toClear.firstElementChild) {
+                        toClear.removeChild(toClear.firstElementChild);
+                    }
+                }
+            }
+
+            function cycleDefinition(offset) {
+                let tempIndex = (definitionIndex + offset) % definitions.length;
+                definitionIndex = tempIndex < 0 ? definitions.length + tempIndex : tempIndex;
+
+                clearChildren(TAGS_ID);
+                clearChildren(EXTRA_INFO_ID);
+
+                renderDefinition();
+            }
+
+            function renderDefinition() {
+                const currentDefinition = definitions[definitionIndex];
+
+                document.getElementById(TAGS_ID).append(...(currentDefinition.tags));
+                document.getElementById(DEFINITION_ID).textContent =
+                        '('
+                        + getGroupSymbol(currentDefinition.groupIndex)
+                        + ' '
+                        + (definitionIndex + 1)
+                        + '/'
+                        + definitions.length
+                        + ') '
+                        + currentDefinition.definition;
+
+                const extraInfoButtonEl = document.getElementById(EXTRA_INFO_BUTTON_ID);
+                if (extraInfoButtonEl) { // Won't be present on the front of "reverse" cards
+                    if (currentDefinition.extraInfo) {
+                        document.getElementById(EXTRA_INFO_ID).append(currentDefinition.extraInfo);
+                        extraInfoButtonEl.removeAttribute('disabled');
+                    } else {
+                        extraInfoButtonEl.setAttribute('disabled', true);
+                    }
+                }
+            }
+
+            function getGroupSymbol(groupIndex) {
+                if (groupIndex < 1 || groupIndex > 20) {
+                    return `[${groupIndex}]`;
+                }
+                return String.fromCodePoint(0x245F + groupIndex);
+            }
+
+            initialize();
+
+            // The below line allows Chrome DevTools to expose this inline <script> in the Sources tab,
+            // under the path shown here -- kept in sync with this file's actual location so breakpoints
+            // set there correspond to real source lines.
+            //# sourceURL=src/inputs/glossary-logic.js
+        </script>
+
+        <hr>
+
+        <div id="reading-field">
+            <div id="accent-graph"><svg xmlns="http://www.w3.org/2000/svg" width="124" height="30" viewBox="0 0 124 30" style="vertical-align:middle"><path d="M15,20 L45,20 L45,10 L75,10 L75,20 L105,20" stroke="currentColor" stroke-width="2" fill="none"/><circle cx="15" cy="20" r="4" fill="currentColor"/><circle cx="45" cy="20" r="4" fill="currentColor"/><circle cx="75" cy="10" r="4" fill="currentColor"/><circle cx="105" cy="20" r="4" fill="none" stroke="currentColor" stroke-width="2"/></svg></div>
+            <ruby>食<rt>た</rt></ruby>べる
+        </div>
+
+        <p><span style="font-size:0.5em;opacity:0.6">[Audio play button]</span></p>
+    </template>
+
+    <div id="test-harness-card" class="card"></div>
+
+    <script>
+        // Test-harness runtime.
+        (function () {
+            'use strict';
+
+            const noteTypeEls = Array.from(document.querySelectorAll('template[data-note-type]'));
+            const testcaseEls = Array.from(document.querySelectorAll('template[data-testcase]'));
+            const cardEl = document.getElementById('test-harness-card');
+
+            const noteTypeNames = uniqueInOrder(noteTypeEls.map(el => el.dataset.noteType));
+            const testcaseNames = testcaseEls.map(el => el.dataset.testcase);
+            const sides = ['front', 'back'];
+
+            function uniqueInOrder(values) {
+                return values.filter((value, index) => values.indexOf(value) === index);
+            }
+
+            const params = new URLSearchParams(location.hash.replace(/^#/, ''));
+            const noteType = pick(params.get('noteType'), noteTypeNames);
+            // Start on the front side by default
+            const side = sides.indexOf(params.get('side')) !== -1 ? params.get('side') : 'front';
+            const testcaseName = pick(params.get('testcase'), testcaseNames);
+
+            function pick(requested, available) {
+                return available.indexOf(requested) !== -1 ? requested : available[0];
+            }
+
+            // Fill the glossary slot inside the selected note-type template from the
+            // selected test case template, then clone the result into cardEl. Note
+            // that this will cause the card script (glossary-logic.js) to execute.
+            const selectedNoteType = noteTypeEls.find(el => el.dataset.noteType === noteType && el.dataset.side === side);
+            const selectedTestcase = testcaseEls.find(el => el.dataset.testcase === testcaseName);
+            if (selectedNoteType) {
+                const glossaryEl = selectedTestcase && selectedNoteType.content.querySelector('#glossary-input');
+                if (glossaryEl) {
+                    glossaryEl.appendChild(selectedTestcase.content.cloneNode(true));
+                }
+                cardEl.appendChild(selectedNoteType.content.cloneNode(true));
+            }
+
+            // Changing any control reloads the page rather than re-running initialize().
+            // initialize() ends with addEventListener('keydown', ...) and never removes
+            // it, so calling it a second time would stack handlers. A reload also resets
+            // the definitionIndex/definitions globals.
+            function reloadWith(nextNoteType, nextSide, nextTestcase) {
+                location.hash = 'noteType=' + encodeURIComponent(nextNoteType) +
+                    '&side=' + encodeURIComponent(nextSide) +
+                    '&testcase=' + encodeURIComponent(nextTestcase);
+                location.reload();
+            }
+
+            const noteTypeSelect = document.getElementById('test-harness-note-type');
+            const testcaseSelect = document.getElementById('test-harness-testcase');
+            const flipButton = document.getElementById('test-harness-flip');
+
+            fillSelect(noteTypeSelect, noteTypeNames, noteType);
+            fillSelect(testcaseSelect, testcaseNames, testcaseName);
+            updateFlipButton();
+
+            function fillSelect(select, names, selected) {
+                if (!select) {
+                    return;
+                }
+                for (const name of names) {
+                    const option = document.createElement('option');
+                    option.value = name;
+                    option.textContent = name;
+                    option.selected = name === selected;
+                    select.appendChild(option);
+                }
+            }
+
+            function updateFlipButton() {
+                if (flipButton) {
+                    flipButton.textContent = side === 'front' ? 'Flip to back' : 'Flip to front';
+                }
+            }
+
+            function flip() {
+                const nextSide = side === 'front' ? 'back' : 'front';
+                reloadWith(noteType, nextSide, testcaseSelect ? testcaseSelect.value : testcaseName);
+            }
+
+            if (noteTypeSelect) {
+                noteTypeSelect.addEventListener('change', () => reloadWith(noteTypeSelect.value, side, testcaseSelect.value));
+            }
+            if (testcaseSelect) {
+                testcaseSelect.addEventListener('change', () => reloadWith(noteType, side, testcaseSelect.value));
+            }
+            if (flipButton) {
+                flipButton.addEventListener('click', flip);
+            }
+
+            // Space flips the card. Ignored while a form control has focus to preserve
+            // dropdown keypress handling.
+            document.addEventListener('keydown', event => {
+                if (event.key !== ' ' && event.code !== 'Space') {
+                    return;
+                }
+                const active = document.activeElement;
+                const isFormControl = active && /^(SELECT|BUTTON|INPUT|TEXTAREA)$/.test(active.tagName);
+                if (isFormControl) {
+                    return;
+                }
+                event.preventDefault();
+                flip();
+            });
+
+            // Surface errors in a banner
+            window.addEventListener('error', event => {
+                const status = document.getElementById('test-harness-status');
+                if (status) {
+                    status.textContent = 'Error: ' + (event.message || String(event.error));
+                    status.hidden = false;
+                }
+            });
+
+            //# sourceURL=src/inputs/test-harness.js
+        })();
+    </script>
+</body>
+</html>

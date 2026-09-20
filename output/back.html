@@ -1,11 +1,26 @@
+{{FrontSide}}
+
+<hr>
+
 <div id="glossary-input" style="display:none">{{Glossary}}</div>
+
+<div id="reading-field">
+    <div id="accent-graph">{{Graph}}</div>
+    {{Reading}}
+</div>
 
 <div id="box-definition">
     <div class="box-upper-half" onclick="cycleDefinition(1)">
         <div id="tags"></div>
         <p id="definition"></p>
     </div>
+    <div class="box-bottom-half">
+        <button id="extra-info-button" disabled onclick="toggleExtraInfo()">Show extra info</button>
+        <div id="extra-info" class="extra-info" style="display: none"></div>
+    </div>
 </div>
+
+<p>{{Audio}}</p>
 
 <script>
     // TODO:
@@ -230,6 +245,8 @@
 
     initialize();
 
-    // The below line allows Chrome DevTools to expose this inline <script> in the Sources tab
-    //# sourceURL=yomitan-anki-format.js
+    // The below line allows Chrome DevTools to expose this inline <script> in the Sources tab,
+    // under the path shown here -- kept in sync with this file's actual location so breakpoints
+    // set there correspond to real source lines.
+    //# sourceURL=src/inputs/glossary-logic.js
 </script>

@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Card template test harness</title>
+    <link rel="stylesheet" href="styling.css">
+    <style>
+        html {
+            background-color: #222222;
+        }
+        body {
+            margin: 0;
+            background-color: #222222;
+        }
+        #test-harness-bar {
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1em;
+            align-items: center;
+            padding: 0.6em 1em;
+            background-color: #111111;
+            border-bottom: 1px solid #444444;
+            color: #dddddd;
+            font-family: system-ui, sans-serif;
+            font-size: 14px;
+            text-align: left;
+        }
+        #test-harness-bar label {
+            display: flex;
+            gap: 0.4em;
+            align-items: center;
+        }
+        #test-harness-bar select,
+        #test-harness-bar button {
+            font: inherit;
+        }
+        #test-harness-flip {
+            cursor: pointer;
+        }
+        #test-harness-hint {
+            margin-left: auto;
+            color: #888888;
+        }
+        #test-harness-status {
+            width: 100%;
+            padding: 0.4em 0.6em;
+            background-color: #5a1111;
+            color: #ffdddd;
+            font-family: ui-monospace, monospace;
+        }
+    </style>
+</head>
+<body>
+    <div id="test-harness-bar">
+        <label>Note type <select id="test-harness-note-type"></select></label>
+        <label>Test case <select id="test-harness-testcase"></select></label>
+        <button id="test-harness-flip" type="button"></button>
+        <span id="test-harness-hint">space to flip &middot; click the definition or press &larr;/&rarr; to cycle</span>
+        <span id="test-harness-status" hidden></span>
+    </div>
+
+    <!-- @testcases -->
+
+    <!-- @note-types -->
+
+    <div id="test-harness-card" class="card"></div>
+
+    <script>
+        <!-- @include inputs/test-harness.js -->
+    </script>
+</body>
+</html>

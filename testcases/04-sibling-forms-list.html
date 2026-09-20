@@ -1,0 +1,33 @@
+<!--
+  Regression case for the ':not([data-sc-content])' filter in getTagGroups().
+
+  Yomitan emits non-tag-group <li> entries (forms, attribution, ...) as siblings
+  of the real tag groups inside the same <ul>. They are marked with
+  data-sc-content and must be skipped -- if the filter is ever dropped, the
+  "雨 / あめ" forms list below would be parsed as an extra definition group and
+  show up as bogus definitions.
+
+  Expect: exactly 1 definition, "rain", with the extra-info button disabled.
+-->
+<div class="yomitan-glossary">
+  <span>
+    <ul>
+      <li>
+        <span>noun</span>
+        <ol>
+          <li>
+            <ul data-sc-content="glossary">
+              <li>rain</li>
+            </ul>
+          </li>
+        </ol>
+      </li>
+      <li data-sc-content="forms">
+        <ul>
+          <li>雨</li>
+          <li>あめ</li>
+        </ul>
+      </li>
+    </ul>
+  </span>
+</div>

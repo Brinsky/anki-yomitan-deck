@@ -1,0 +1,32 @@
+<!--
+  "Single-entry" shape: one tag group directly under the span (no <ul>), and one
+  definition group directly under that (no <ol>). Exercises the getTagGroups()
+  fallback to ':scope > span > div' and the getDefinitionGroups() fallback to
+  ':scope > div'.
+
+  Expect: 2 definitions, both tagged "godan verb"/"transitive", both with extra
+  info available.
+-->
+<div class="yomitan-glossary">
+  <span>
+    <div>
+      <span>godan verb</span>
+      <span>transitive</span>
+      <div>
+        <ul data-sc-content="glossary">
+          <li>to eat</li>
+          <li>to live on (e.g. a salary); to subsist on</li>
+        </ul>
+        <div data-sc-content="extra-info">
+          <div data-sc-content="sense-note">Usually written using kana alone.</div>
+          <div>
+            <div data-sc-content="example-sentence">毎朝パンを食べる。 — I eat bread every morning.</div>
+          </div>
+          <div>
+            <div data-sc-content="xref">See also: 飲む</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </span>
+</div>

@@ -1,0 +1,8 @@
+{
+  "_comment": "Stand-in values for the Anki fields, used only by output/testing.html.",
+
+  "Word": "食べる",
+  "Reading": "<ruby>食<rt>た</rt></ruby>べる",
+  "Graph": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"124\" height=\"30\" viewBox=\"0 0 124 30\" style=\"vertical-align:middle\"><path d=\"M15,20 L45,20 L45,10 L75,10 L75,20 L105,20\" stroke=\"currentColor\" stroke-width=\"2\" fill=\"none\"/><circle cx=\"15\" cy=\"20\" r=\"4\" fill=\"currentColor\"/><circle cx=\"45\" cy=\"20\" r=\"4\" fill=\"currentColor\"/><circle cx=\"75\" cy=\"10\" r=\"4\" fill=\"currentColor\"/><circle cx=\"105\" cy=\"20\" r=\"4\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\"/></svg>",
+  "Audio": "<span style=\"font-size:0.5em;opacity:0.6\">[Audio play button]</span>"
+}

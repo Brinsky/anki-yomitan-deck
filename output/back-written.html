@@ -4,10 +4,10 @@
 
 <div id="glossary-input" style="display:none">{{Glossary}}</div>
 
-<div id="reading-field">
+<div id="expression-field-back">
     <div id="accent-graph">{{Graph}}</div>
-    {{Reading}}
 </div>
+
 
 <div id="box-definition">
     <div class="box-upper-half" onclick="cycleDefinition(1)">
@@ -23,10 +23,6 @@
 <p>{{Audio}}</p>
 
 <script>
-    // TODO:
-    // - Rework selectors to find all bottom-level 'glossary' elements and retrace elements upwards
-    // - Support per-definition-group tags
-
     // Need to be 'var' in global scope (or use IIFE?)
     var GLOSSARY_INPUT_ID = 'glossary-input';
     var TAGS_ID = 'tags';

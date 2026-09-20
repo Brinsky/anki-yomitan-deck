@@ -1,9 +1,22 @@
+{{FrontSide}}
+
+<hr>
+
 <div id="glossary-input" style="display:none">{{Glossary}}</div>
+
+<div id="expression-field-back">
+    <div id="accent-graph">{{Graph}}</div>
+    {{Word}}
+</div>
 
 <div id="box-definition">
     <div class="box-upper-half" onclick="cycleDefinition(1)">
         <div id="tags"></div>
         <p id="definition"></p>
+    </div>
+    <div class="box-bottom-half">
+        <button id="extra-info-button" disabled onclick="toggleExtraInfo()">Show extra info</button>
+        <div id="extra-info" class="extra-info" style="display: none"></div>
     </div>
 </div>
 

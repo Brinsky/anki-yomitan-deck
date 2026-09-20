@@ -24,9 +24,9 @@ OUTPUT = ROOT / "output"
 
 # (note type name, src/ path of its Front template, src/ path of its Back template)
 NOTE_TYPES = [
-    ("written", "templates/front-written.html", "templates/back.html"),
-    ("audio", "templates/front-audio.html", "templates/back.html"),
+    ("audio", "templates/front-audio.html", "templates/back-audio.html"),
     ("reversed", "templates/front-reverse.html", "templates/back-reverse.html"),
+    ("written", "templates/front-written.html", "templates/back-written.html"),
 ]
 TESTING_TEMPLATE = "templates/testing.html"
 
@@ -197,6 +197,7 @@ def main():
 
     if OUTPUT.exists():
         shutil.rmtree(OUTPUT)
+        print(f"cleared output/ contents")
     OUTPUT.mkdir(parents=True)
     for name, contents in sorted(artifacts.items()):
         (OUTPUT / name).write_text(contents, encoding="utf-8")

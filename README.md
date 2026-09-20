@@ -6,15 +6,12 @@ A basic Anki deck template for use with Yomitan. Forked from https://github.com/
 
 | Anki Field    | Yomitan Template         |
 |---------------|--------------------------|
-| Word          | {expression}             |
+| Word          | {furigana}               |
 | Reading       | {reading}                |
-| Glossary      | {glossary-no-dictionary} |
-| Sentence      | {clipboard-text}         |
-| Picture       |                          |
+| Hepburn       | *I fill this manually*   |
+| Glossary      | {glossary}               |
 | Audio         | {audio}                  |
-| SentenceAudio |                          |
 | Graph         | {pitch-accent-graphs}    |
-| Hint          |                          |
 
 ## Last tested dictionary versions
 
@@ -50,9 +47,9 @@ python3 build.py
    | Note type      | Anki slot | File                        |
    |----------------|-----------|-----------------------------|
    | Written        | Front     | `output/front-written.html` |
-   | Written        | Back      | `output/back.html`          |
+   | Written        | Back      | `output/back-written.html`  |
    | Audio          | Front     | `output/front-audio.html`   |
-   | Audio          | Back      | `output/back.html`          |
+   | Audio          | Back      | `output/back-audio.html`    |
    | Reverse        | Front     | `output/front-reverse.html` |
    | Reverse        | Back      | `output/back-reverse.html`  |
    | *(all)*        | Styling   | `output/styling.css`        |

@@ -1,55 +1,192 @@
 <!--
-  "Typical" shape: <ul> of tag groups under the span, each with an <ol> of
-  definition groups. This is what most Jitendex entries look like.
-
-  Note the second tag group carries two tags, and the second definition group of
-  the first tag group has no extra-info -- so "Show extra info" must enable and
-  disable as you cycle.
-
-  Expect: 4 definitions across 3 definition groups (① ① ② ③).
+  Typical structure of yomitan-glossary:
+  <div class="yomitan-glossary">
+    <span>
+      <ul> <!~~ Tag groups ~~>
+        <li> <!~~ Tag group ~~>
+          <span>[...]</span <!~~ Tag(s) (one or more)
+          <ol> <!~~ Definition groups ~~>
+            <li> <!~~ Definition group ~~>
+              <ul data-sc-content="glossary">
+                <li>[...]</li> <!~~ Definition(s) (one or more) ~~>
+              </ul>
+              <div data-sc-content="extra-info"> <!~~ Extra info (zero or one) ~~>
+                <div data-sc-content="sense-note">[...]</div>
+                <div>
+                  <div data-sc-content="example-sentence">[...]</div> <!~~ Example sentence (zero or one) ~~>
+                </div>
+                <div>
+                  <div data-sc-content="xref">[...]</div> <!~~ See also (zero or one) ~~>
+                </div>
+              </div>
+            </li>
+            <li>[...]</li> <!~~ Definition group ~~>
+          </ol>
+        <li>[...]</li> <!~~ Tag group ~~>
+      </ul>
+    </span>
+  </div>
 -->
-<div class="yomitan-glossary">
+<div style="text-align: left;" class="yomitan-glossary">
+  <i>(priority&nbsp;form, ★, Jitendex.org [2024-08-11])</i>
   <span>
-    <ul>
-      <li>
-        <span>noun</span>
+    <ul lang="ja" style="list-style-type: &quot;＊&quot;;">
+      <li><span data-sc-code="adv" title="adverb (fukushi)"
+          style="font-weight: bold; font-size: 0.8em; color: white; background-color: rgb(86, 86, 86); vertical-align: text-bottom; border-radius: 0.3em; margin-right: 0.25em; padding: 0.2em 0.3em; word-break: keep-all; cursor: help;">adverb</span><span
+          data-sc-code="vs" title="noun or participle which takes the aux. verb suru"
+          style="font-weight: bold; font-size: 0.8em; color: white; background-color: rgb(86, 86, 86); vertical-align: text-bottom; border-radius: 0.3em; margin-right: 0.25em; padding: 0.2em 0.3em; word-break: keep-all; cursor: help;">suru</span><span
+          data-sc-code="uk" title="word usually written using kana alone"
+          style="font-weight: bold; font-size: 0.8em; color: white; background-color: brown; vertical-align: text-bottom; border-radius: 0.3em; margin-right: 0.25em; padding: 0.2em 0.3em; word-break: keep-all; cursor: help;">kana</span>
         <ol>
-          <li>
+          <li style="padding-left: 0.25em; list-style-type: &quot;①&quot;;">
             <ul data-sc-content="glossary">
-              <li>bridge</li>
+              <li>for a moment</li>
+              <li>for a minute</li>
             </ul>
-            <div data-sc-content="extra-info">
-              <div data-sc-content="sense-note">Usually written as 橋.</div>
+            <div data-sc-content="extra-info" style="margin-left: 0.5em;">
               <div>
-                <div data-sc-content="example-sentence">橋を渡る。 — To cross a bridge.</div>
+                <div data-sc-content="example-sentence" data-sc-source="231703"
+                  style="background-color: color-mix(in srgb, var(--text-color) 5%, transparent); border-color: var(--text-color); border-style: none none none solid; border-radius: 0.4rem; border-width: calc(3em / var(--font-size-no-units)); margin-top: 0.5rem; margin-bottom: 0.5rem; padding: 0.5rem;">
+                  <div data-sc-content="example-sentence-a" style="font-size: 1.3em;">あなたは<ruby>働<rt>はたら</rt>
+                    </ruby>きすぎです。<span style="text-emphasis: dot red;">しばらく</span><ruby>座<rt>すわ</rt></ruby>って<ruby>楽
+                      <rt>らく</rt>
+                    </ruby>にしなさい。</div>
+                  <div data-sc-content="example-sentence-b" style="font-size: 0.8em;">You are working too hard. Sit down
+                    and take it easy for a while.<span data-sc-content="attribution-footnote"
+                      style="font-size: 0.8em; color: rgb(119, 119, 119); vertical-align: top; margin-left: 0.25rem;">[1]</span>
+                  </div>
+                </div>
               </div>
             </div>
           </li>
-          <li>
+        </ol>
+      </li>
+      <li style="margin-top: 0.5em;"><span data-sc-code="adv" title="adverb (fukushi)"
+          style="font-weight: bold; font-size: 0.8em; color: white; background-color: rgb(86, 86, 86); vertical-align: text-bottom; border-radius: 0.3em; margin-right: 0.25em; padding: 0.2em 0.3em; word-break: keep-all; cursor: help;">adverb</span><span
+          data-sc-code="uk" title="word usually written using kana alone"
+          style="font-weight: bold; font-size: 0.8em; color: white; background-color: brown; vertical-align: text-bottom; border-radius: 0.3em; margin-right: 0.25em; padding: 0.2em 0.3em; word-break: keep-all; cursor: help;">kana</span>
+        <ol>
+          <li style="padding-left: 0.25em; list-style-type: &quot;②&quot;;">
             <ul data-sc-content="glossary">
-              <li>chopsticks</li>
-              <li>pair of chopsticks</li>
+              <li>for a while</li>
+              <li>for some time</li>
+            </ul>
+            <div data-sc-content="extra-info" style="margin-left: 0.5em;">
+              <div>
+                <div data-sc-content="example-sentence" data-sc-source="224699"
+                  style="background-color: color-mix(in srgb, var(--text-color) 5%, transparent); border-color: var(--text-color); border-style: none none none solid; border-radius: 0.4rem; border-width: calc(3em / var(--font-size-no-units)); margin-top: 0.5rem; margin-bottom: 0.5rem; padding: 0.5rem;">
+                  <div data-sc-content="example-sentence-a" style="font-size: 1.3em;">ここ<span
+                      style="text-emphasis: dot red;">しばらく</span><ruby>彼<rt>かれ</rt></ruby>にまるで<ruby>会<rt>あ</rt>
+                    </ruby>わない。</div>
+                  <div data-sc-content="example-sentence-b" style="font-size: 0.8em;">I haven't seen anything of him for
+                    some time.<span data-sc-content="attribution-footnote"
+                      style="font-size: 0.8em; color: rgb(119, 119, 119); vertical-align: top; margin-left: 0.25rem;">[2]</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </li>
+          <li style="padding-left: 0.25em; list-style-type: &quot;③&quot;;">
+            <ul data-sc-content="glossary">
+              <li>for the time being</li>
+              <li>for now</li>
+            </ul>
+            <div data-sc-content="extra-info" style="margin-left: 0.5em;">
+              <div>
+                <div data-sc-content="example-sentence" data-sc-source="170078"
+                  style="background-color: color-mix(in srgb, var(--text-color) 5%, transparent); border-color: var(--text-color); border-style: none none none solid; border-radius: 0.4rem; border-width: calc(3em / var(--font-size-no-units)); margin-top: 0.5rem; margin-bottom: 0.5rem; padding: 0.5rem;">
+                  <div data-sc-content="example-sentence-a" style="font-size: 1.3em;"><ruby>昨日<rt>きのう</rt>
+                    </ruby>トムはバイクの<ruby>事<rt>じ</rt></ruby><ruby>故<rt>こ</rt></ruby>でけがをしたので、<span
+                      style="text-emphasis: dot red;">しばらく</span><ruby>体<rt>たい</rt></ruby><ruby>育<rt>いく</rt>
+                    </ruby>の<ruby>授<rt>じゅ</rt></ruby><ruby>業<rt>ぎょう</rt></ruby>には<ruby>出<rt>で</rt></ruby>られません。</div>
+                  <div data-sc-content="example-sentence-b" style="font-size: 0.8em;">Yesterday, Tom was injured in a
+                    motorbike accident, so he can't attend gym class for the time being.<span
+                      data-sc-content="attribution-footnote"
+                      style="font-size: 0.8em; color: rgb(119, 119, 119); vertical-align: top; margin-left: 0.25rem;">[3]</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </li>
+        </ol>
+      </li>
+      <li style="margin-top: 0.5em;"><span data-sc-code="int" title="interjection (kandoushi)"
+          style="font-weight: bold; font-size: 0.8em; color: white; background-color: rgb(86, 86, 86); vertical-align: text-bottom; border-radius: 0.3em; margin-right: 0.25em; padding: 0.2em 0.3em; word-break: keep-all; cursor: help;">interjection</span><span
+          data-sc-code="uk" title="word usually written using kana alone"
+          style="font-weight: bold; font-size: 0.8em; color: white; background-color: brown; vertical-align: text-bottom; border-radius: 0.3em; margin-right: 0.25em; padding: 0.2em 0.3em; word-break: keep-all; cursor: help;">kana</span>
+        <ol>
+          <li style="padding-left: 0.25em; list-style-type: &quot;④&quot;;">
+            <ul data-sc-content="glossary">
+              <li>it's been a long time</li>
+              <li>long time no see</li>
             </ul>
           </li>
         </ol>
       </li>
-      <li>
-        <span>noun</span>
-        <span>archaic</span>
-        <ol>
-          <li>
-            <ul data-sc-content="glossary">
-              <li>edge; rim; margin</li>
-            </ul>
-            <div data-sc-content="extra-info">
-              <div data-sc-content="sense-note">Now largely superseded by 端 (はし).</div>
-              <div>
-                <div data-sc-content="xref">See also: 端</div>
-              </div>
-            </div>
-          </li>
-        </ol>
+      <li data-sc-content="forms" style="margin-top: 0.5rem;"><span title="spelling and reading variants"
+          style="font-weight: bold; font-size: 0.8em; color: white; background-color: rgb(86, 86, 86); vertical-align: text-bottom; border-radius: 0.3em; margin-right: 0.25em; padding: 0.2em 0.3em; word-break: keep-all; cursor: help;">forms</span>
+        <div style="margin-top: 0.2em;">
+          <div style="display:block;">
+            <table style="table-layout:auto;border-collapse:collapse;">
+              <tbody>
+                <tr>
+                  <th
+                    style="font-weight:bold;border-style:solid;padding:0.25em;vertical-align:top;border-width:1px;border-color:currentColor;font-weight: normal; font-size: 1.2em; text-align: center;">
+                  </th>
+                  <th
+                    style="font-weight:bold;border-style:solid;padding:0.25em;vertical-align:top;border-width:1px;border-color:currentColor;font-weight: normal; font-size: 1.2em; text-align: center;">
+                    暫く</th>
+                  <th
+                    style="font-weight:bold;border-style:solid;padding:0.25em;vertical-align:top;border-width:1px;border-color:currentColor;font-weight: normal; font-size: 1.2em; text-align: center;">
+                    暫らく</th>
+                  <th
+                    style="font-weight:bold;border-style:solid;padding:0.25em;vertical-align:top;border-width:1px;border-color:currentColor;font-weight: normal; font-size: 1.2em; text-align: center;">
+                    姑く</th>
+                  <th
+                    style="font-weight:bold;border-style:solid;padding:0.25em;vertical-align:top;border-width:1px;border-color:currentColor;font-weight: normal; font-size: 1.2em; text-align: center;">
+                    須臾</th>
+                </tr>
+                <tr>
+                  <th
+                    style="font-weight:bold;border-style:solid;padding:0.25em;vertical-align:top;border-width:1px;border-color:currentColor;font-weight: normal;">
+                    しばらく</th>
+                  <td
+                    style="border-style:solid;padding:0.25em;vertical-align:top;border-width:1px;border-color:currentColor;text-align: center;">
+                    <div title="high priority form"
+                      style="color: white; background: radial-gradient(green 50%, white 100%); clip-path: circle(); padding: 0px 0.25em; cursor: help;">
+                      優</div>
+                  </td>
+                  <td
+                    style="border-style:solid;padding:0.25em;vertical-align:top;border-width:1px;border-color:currentColor;text-align: center;">
+                    <div title="irregular form"
+                      style="color: white; background: radial-gradient(crimson 50%, white 100%); clip-path: circle(); padding: 0px 0.25em; cursor: help;">
+                      誤</div>
+                  </td>
+                  <td
+                    style="border-style:solid;padding:0.25em;vertical-align:top;border-width:1px;border-color:currentColor;text-align: center;">
+                    <div title="rarely used form"
+                      style="color: white; background: radial-gradient(purple 50%, white 100%); clip-path: circle(); padding: 0px 0.25em; cursor: help;">
+                      稀</div>
+                  </td>
+                  <td
+                    style="border-style:solid;padding:0.25em;vertical-align:top;border-width:1px;border-color:currentColor;text-align: center;">
+                    <div title="rarely used form"
+                      style="color: white; background: radial-gradient(purple 50%, white 100%); clip-path: circle(); padding: 0px 0.25em; cursor: help;">
+                      稀</div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
       </li>
     </ul>
+    <div data-sc-content="attribution" style="font-size: 0.7em; text-align: right;"><a
+        href="https://www.edrdg.org/jmwsgi/entr.py?svc=jmdict&amp;q=1304420"><span>JMdict</span><span
+          style="display:none;"></span></a> | Tatoeba <a
+        href="https://tatoeba.org/en/sentences/show/231703"><span>[1]</span><span style="display:none;"></span></a><a
+        href="https://tatoeba.org/en/sentences/show/224699"><span>[2]</span><span style="display:none;"></span></a><a
+        href="https://tatoeba.org/en/sentences/show/170078"><span>[3]</span><span style="display:none;"></span></a>
+    </div>
   </span>
 </div>

@@ -1,32 +1,96 @@
 <!--
-  "Single-entry" shape: one tag group directly under the span (no <ul>), and one
-  definition group directly under that (no <ol>). Exercises the getTagGroups()
-  fallback to ':scope > span > div' and the getDefinitionGroups() fallback to
-  ':scope > div'.
-
-  Expect: 2 definitions, both tagged "godan verb"/"transitive", both with extra
-  info available.
--->
-<div class="yomitan-glossary">
-  <span>
-    <div>
-      <span>godan verb</span>
-      <span>transitive</span>
-      <div>
-        <ul data-sc-content="glossary">
-          <li>to eat</li>
-          <li>to live on (e.g. a salary); to subsist on</li>
-        </ul>
-        <div data-sc-content="extra-info">
-          <div data-sc-content="sense-note">Usually written using kana alone.</div>
-          <div>
-            <div data-sc-content="example-sentence">毎朝パンを食べる。 — I eat bread every morning.</div>
-          </div>
-          <div>
-            <div data-sc-content="xref">See also: 飲む</div>
+  Single-entries structure of yomitan-glossary:
+  <div class="yomitan-glossary">
+    <span>
+      <div> <!~~ Tag group ~~>
+        <span>[...]</span <!~~ Tag(s) (one or more) ~~>
+        <div> <!~~ Definition group ~~>
+          <ul data-sc-content="glossary">
+            <li>[...]</li> <!~~ Definition(s) (one or more) ~~>
+          </ul>
+          <div data-sc-content="extra-info"> <!~~ Extra info (zero or one) ~~>
+            <div data-sc-content="sense-note">[...]</div>
+            <div>
+              <div data-sc-content="example-sentence">[...]</div> <!~~ Example sentence (zero or one) ~~>
+            </div>
+            <div>
+              <div data-sc-content="xref">[...]</div> <!~~ See also (zero or one) ~~>
+            </div>
           </div>
         </div>
       </div>
+    </span>
+  </div>
+-->
+<div style="text-align: left;" class="yomitan-glossary"><i>(priority&nbsp;form, ★, Jitendex.org [2024-08-11])</i>
+  <span>
+    <div><span data-sc-code="n" title="noun (common) (futsuumeishi)"
+        style="font-weight: bold; font-size: 0.8em; color: white; background-color: rgb(86, 86, 86); vertical-align: text-bottom; border-radius: 0.3em; margin-right: 0.25em; padding: 0.2em 0.3em; word-break: keep-all; cursor: help;">noun</span>
+      <div>
+        <ul data-sc-content="glossary">
+          <li>employee (of a store)</li>
+          <li>shop assistant</li>
+          <li>clerk</li>
+          <li>salesperson</li>
+        </ul>
+        <div data-sc-content="extra-info" style="margin-left: 0.5em;">
+          <div>
+            <div data-sc-content="example-sentence" data-sc-source="124975"
+              style="background-color: color-mix(in srgb, var(--text-color) 5%, transparent); border-color: var(--text-color); border-style: none none none solid; border-radius: 0.4rem; border-width: calc(3em / var(--font-size-no-units)); margin-top: 0.5rem; margin-bottom: 0.5rem; padding: 0.5rem;">
+              <div data-sc-content="example-sentence-a" lang="ja" style="font-size: 1.3em;"><span
+                  data-sc-content="example-keyword" lang="ja" style="text-emphasis: dot red;">店員</span>はその<ruby
+                  lang="ja">荷<rt lang="ja">に</rt></ruby><ruby lang="ja">物<rt lang="ja">もつ</rt></ruby>にラベルをつけた。</div>
+              <div data-sc-content="example-sentence-b" style="font-size: 0.8em;">The clerk labeled the baggage.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div data-sc-content="forms" style="margin-top: 0.5rem;"><span title="spelling and reading variants"
+        style="font-weight: bold; font-size: 0.8em; color: white; background-color: rgb(86, 86, 86); vertical-align: text-bottom; border-radius: 0.3em; margin-right: 0.25em; padding: 0.2em 0.3em; word-break: keep-all; cursor: help;">forms</span>
+      <div style="margin-top: 0.2em;">
+        <div style="display:block;">
+          <table style="table-layout:auto;border-collapse:collapse;">
+            <tbody>
+              <tr>
+                <th
+                  style="font-weight:bold;border-style:solid;padding:0.25em;vertical-align:top;border-width:1px;border-color:currentColor;font-weight: normal; font-size: 1.2em; text-align: center;">
+                </th>
+                <th lang="ja"
+                  style="font-weight:bold;border-style:solid;padding:0.25em;vertical-align:top;border-width:1px;border-color:currentColor;font-weight: normal; font-size: 1.2em; text-align: center;">
+                  店員</th>
+              </tr>
+              <tr>
+                <th lang="ja"
+                  style="font-weight:bold;border-style:solid;padding:0.25em;vertical-align:top;border-width:1px;border-color:currentColor;font-weight: normal;">
+                  てんいん</th>
+                <td
+                  style="border-style:solid;padding:0.25em;vertical-align:top;border-width:1px;border-color:currentColor;text-align: center;">
+                  <div title="high priority form" lang="ja"
+                    style="color: white; background: radial-gradient(green 50%, white 100%); clip-path: circle(); padding: 0px 0.25em; cursor: help;">
+                    優</div>
+                </td>
+              </tr>
+              <tr>
+                <th lang="ja"
+                  style="font-weight:bold;border-style:solid;padding:0.25em;vertical-align:top;border-width:1px;border-color:currentColor;font-weight: normal;">
+                  ていいん</th>
+                <td
+                  style="border-style:solid;padding:0.25em;vertical-align:top;border-width:1px;border-color:currentColor;text-align: center;">
+                  <div title="irregular form" lang="ja"
+                    style="color: white; background: radial-gradient(crimson 50%, white 100%); clip-path: circle(); padding: 0px 0.25em; cursor: help;">
+                    誤</div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    <div data-sc-content="attribution" style="font-size: 0.7em; text-align: right;"><a
+        href="https://www.edrdg.org/jmwsgi/entr.py?svc=jmdict&amp;q=1440670"><span>JMdict</span><span
+          style="display:none;"></span></a> | <a
+        href="https://tatoeba.org/en/sentences/show/124975"><span>Tatoeba</span><span style="display:none;"></span></a>
     </div>
   </span>
 </div>

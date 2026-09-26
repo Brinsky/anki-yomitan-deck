@@ -1,53 +1,93 @@
 <!--
-  "Multi-dictionary" shape: an <ol> of <li data-dictionary="..."> at the top
-  level, each wrapping a normal "typical" structure. Exercises the recursive
-  branch of getTagGroups().
-
-  Note the dictionary name appears in an <i> that is NOT inside a tag group, so
-  it must not leak into the tags row or the definition text.
-
-  Expect: 3 definitions, the first two from Jitendex, the third in Japanese from
-  新明解国語辞典.
+  Multi-dictionary structure of yomitan-glossary:
+  <div class="yomitan-glossary">
+    <ol>
+      <li data-dictionary="Dictionary Name">
+        <i>Dictionary Name</i>
+        <span>
+          <ul>[...]</ul> <!~~ Tag groups ~~>
+        </span>
+      </li>
+      <li data-dictionary="Dictionary Name">
+        <i>Dictionary Name</i>
+        <span>
+          <ul>[...]</ul> <!~~ Tag groups ~~>
+        </span>
+      </li>
+    </ol>
+  </div>
 -->
-<div class="yomitan-glossary">
-  <ol>
-    <li data-dictionary="Jitendex">
-      <i>Jitendex</i>
-      <span>
-        <ul>
-          <li>
-            <span>noun</span>
-            <ol>
-              <li>
-                <ul data-sc-content="glossary">
-                  <li>dictionary</li>
-                  <li>lexicon</li>
-                </ul>
-                <div data-sc-content="extra-info">
-                  <div data-sc-content="sense-note">Compare 辞書 and 辞典.</div>
+<div style="text-align: left;" class="yomitan-glossary">
+    <ol>
+        <li data-dictionary="Jitendex.org [2024-08-11]">
+            <i>(★, Jitendex.org [2024-08-11])</i>
+            <span>
+                <div><span data-sc-code="prt"
+                        style="font-weight: bold; font-size: 0.8em; color: white; background-color: rgb(86, 86, 86); vertical-align: text-bottom; border-radius: 0.3em; margin-right: 0.25em; padding: 0.2em 0.3em; word-break: keep-all;">particle</span>
+                    <ol>
+                        <li style="padding-left: 0.25em; list-style-type: &quot;①&quot;;">
+                            <ul data-sc-content="glossary" style="padding-left: 0px; list-style-type: none;">
+                                <li>even</li>
+                            </ul>
+                            <div data-sc-content="extra-info" style="margin-left: 0.5em;">
+                                <div>
+                                    <div data-sc-content="example-sentence" data-sc-source="89413"
+                                        style="background-color: color-mix(in srgb, var(--text-color) 5%, transparent); border-color: var(--text-color); border-style: none none none solid; border-radius: 0.4rem; border-width: calc(3em / var(--font-size-no-units)); margin-top: 0.5rem; margin-bottom: 0.5rem; padding: 0.5rem;">
+                                        <div data-sc-content="example-sentence-a" lang="ja" style="font-size: 1.3em;">
+                                            彼女は私の家に<span lang="ja" style="text-emphasis: dot red;">さえ</span>来なかった。</div>
+                                        <div data-sc-content="example-sentence-b" style="font-size: 0.8em;">She did not
+                                            come even as far as my house.<span data-sc-content="attribution-footnote"
+                                                style="font-size: 0.8em; color: rgb(119, 119, 119); vertical-align: top; margin-left: 0.25rem;">[1]</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                        <li style="padding-left: 0.25em; list-style-type: &quot;②&quot;;">
+                            <ul data-sc-content="glossary">
+                                <li>(if) only</li>
+                                <li>just</li>
+                                <li>as long as</li>
+                            </ul>
+                            <div data-sc-content="extra-info" style="margin-left: 0.5em;">
+                                <div data-sc-content="sense-note"
+                                    style="background-color: color-mix(in srgb, goldenrod 5%, transparent); border-color: goldenrod; border-style: none none none solid; border-radius: 0.4rem; border-width: calc(3em / var(--font-size-no-units)); margin-top: 0.5rem; margin-bottom: 0.5rem; padding: 0.5rem;">
+                                    <div style="font-style: italic; font-size: 0.8em; color: rgb(119, 119, 119);">Note
+                                    </div>
+                                    <div style="margin-left: 0.5rem;">in a conditional clause; indicates the only thing
+                                        needed</div>
+                                </div>
+                                <div>
+                                    <div data-sc-content="example-sentence" data-sc-source="237033"
+                                        style="background-color: color-mix(in srgb, var(--text-color) 5%, transparent); border-color: var(--text-color); border-style: none none none solid; border-radius: 0.4rem; border-width: calc(3em / var(--font-size-no-units)); margin-top: 0.5rem; margin-bottom: 0.5rem; padding: 0.5rem;">
+                                        <div data-sc-content="example-sentence-a" lang="ja" style="font-size: 1.3em;">
+                                            <ruby lang="ja">雨<rt lang="ja">あめ</rt></ruby>がやみ<span lang="ja"
+                                                style="text-emphasis: dot red;">さえ</span>すればいいのになあ。</div>
+                                        <div data-sc-content="example-sentence-b" style="font-size: 0.8em;">If only it
+                                            would stop raining!<span data-sc-content="attribution-footnote"
+                                                style="font-size: 0.8em; color: rgb(119, 119, 119); vertical-align: top; margin-left: 0.25rem;">[2]</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                        <li style="padding-left: 0.25em; list-style-type: &quot;③&quot;;">
+                            <ul data-sc-content="glossary">
+                                <li>besides</li>
+                                <li>on top of that</li>
+                                <li>what's more</li>
+                            </ul>
+                        </li>
+                    </ol>
                 </div>
-              </li>
-            </ol>
-          </li>
-        </ul>
-      </span>
-    </li>
-    <li data-dictionary="新明解国語辞典">
-      <i>新明解国語辞典</i>
-      <span>
-        <ul>
-          <li>
-            <span>名</span>
-            <ol>
-              <li>
-                <ul data-sc-content="glossary">
-                  <li>ことばを集めて一定の順序に並べ、その読み方・意味・用法などを説明した書物。</li>
-                </ul>
-              </li>
-            </ol>
-          </li>
-        </ul>
-      </span>
-    </li>
-  </ol>
+                <div data-sc-content="attribution" style="font-size: 0.7em; text-align: right;"><a
+                        href="https://www.edrdg.org/jmwsgi/entr.py?svc=jmdict&amp;q=1005120"><span>JMdict</span><span
+                            style="display:none;"></span></a> | Tatoeba <a
+                        href="https://tatoeba.org/en/sentences/show/89413"><span>[1]</span><span
+                            style="display:none;"></span></a><a
+                        href="https://tatoeba.org/en/sentences/show/237033"><span>[2]</span><span
+                            style="display:none;"></span></a></div>
+            </span></li>
+        <li data-dictionary="JMnedict [2026-01-11]"><i>(fem, JMnedict [2026-01-11])</i> Sae</li>
+    </ol>
 </div>

@@ -24,9 +24,9 @@ OUTPUT = ROOT / "output"
 
 # (note type name, src/ path of its Front template, src/ path of its Back template)
 NOTE_TYPES = [
-    ("audio", "templates/front-audio.html", "templates/back-audio.html"),
-    ("reversed", "templates/front-reverse.html", "templates/back-reverse.html"),
     ("written", "templates/front-written.html", "templates/back-written.html"),
+    ("reversed", "templates/front-reverse.html", "templates/back-reverse.html"),
+    ("audio", "templates/front-audio.html", "templates/back-audio.html"),
 ]
 TESTING_TEMPLATE = "templates/testing.html"
 
